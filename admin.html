@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Área administrativa — Íris</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500&family=Work+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  body{ background: var(--branco-2); }
+  .admin-shell{ max-width: 880px; margin: 0 auto; padding: 48px clamp(20px,5vw,40px) 100px; }
+  .admin-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px; }
+  .admin-top a{ font-family: var(--utilitario); font-size:12px; letter-spacing:.08em; color: var(--carvao-suave); }
+  .admin-top a:hover{ color: var(--acento); }
+  .admin-shell h1{ font-size: clamp(28px,4vw,38px); margin-top: 18px; }
+  .admin-lead{ color: var(--carvao-suave); margin-top: 8px; max-width: 60ch; font-size: 14.5px; line-height:1.6; }
+
+  .login-card{
+    max-width: 380px; margin: 80px auto; background:#fff; border:1px solid var(--cinza-claro);
+    border-radius: 6px; padding: 32px;
+  }
+  .login-card h2{ font-size:22px; }
+  .login-card p{ font-size:13px; color: var(--carvao-suave); margin-top:8px; line-height:1.6; }
+
+  fieldset{ border:1px solid var(--cinza-claro); border-radius:6px; padding: 22px 22px 26px; margin: 26px 0; background:#fff; }
+  legend{ font-family: var(--utilitario); font-size:12px; letter-spacing:.1em; text-transform:uppercase; color: var(--acento); padding:0 8px; }
+  label{ display:block; font-size:13px; font-weight:500; margin: 14px 0 6px; }
+  label small{ display:block; font-weight:400; color: var(--carvao-suave); margin-top: 2px; }
+  input[type=text], input[type=tel], input[type=url], textarea{
+    width:100%; padding: 10px 12px; border:1px solid var(--cinza-claro); border-radius:4px;
+    font-family: var(--corpo); font-size: 14px; background: var(--branco); color: var(--carvao);
+  }
+  textarea{ resize: vertical; min-height: 70px; }
+  .grid2{ display:grid; grid-template-columns: 1fr 1fr; gap: 0 20px; }
+  .repeat-item{ border:1px dashed var(--cinza-claro); border-radius:6px; padding:14px 14px 4px; margin-top:14px; position:relative; }
+  .remove-btn{
+    position:absolute; top:10px; right:10px; background:none; border:none; color:#a33; font-size:12px;
+    font-family: var(--utilitario);
+  }
+  .add-btn{
+    margin-top:14px; background:none; border:1px dashed var(--acento); color: var(--acento);
+    padding:9px 14px; border-radius:4px; font-family: var(--utilitario); font-size:12px; letter-spacing:.06em;
+  }
+  .admin-actions{ display:flex; gap:12px; margin-top: 30px; flex-wrap:wrap; }
+  .btn-admin{
+    font-family: var(--utilitario); font-size:12px; letter-spacing:.08em; text-transform:uppercase;
+    padding: 13px 22px; border-radius:6px; border:1px solid var(--acento);
+  }
+  .btn-primary{ background: var(--preto); color: var(--branco); border-color: var(--preto); }
+  .btn-secondary{ background:transparent; color: var(--carvao); }
+  .save-msg{ font-size:13px; color: var(--preto); margin-top:14px; opacity:0; transition: opacity 300ms ease; }
+  .save-msg.show{ opacity:1; }
+  .aviso{
+    margin-top: 26px; font-size:12.5px; color: var(--carvao-suave); background:#fff;
+    border-left:3px solid var(--acento); padding:12px 14px; border-radius:4px; line-height:1.6;
+  }
+</style>
+</head>
+<body>
+
+<div id="loginCard" class="login-card">
+  <p class="eyebrow">Área administrativa</p>
+  <h2>Entrar</h2>
+  <p>Acesso restrito para edição do site. (Protótipo: sem senha real cadastrada ainda — qualquer valor entra. Em produção, isso precisa de um login de verdade no backend.)</p>
+  <label for="loginSenha">Senha</label>
+  <input type="text" id="loginSenha" placeholder="••••••">
+  <button class="btn-admin btn-primary" id="loginBtn" style="margin-top:16px; width:100%;">Entrar</button>
+</div>
+
+<div class="admin-shell" id="adminShell" style="display:none;">
+  <div class="admin-top">
+    <span class="brand-mark" style="color:var(--carvao); font-size:18px;">Painel administrativo</span>
+    <a href="index.html">← Ver site</a>
+  </div>
+  <h1>O que você quer atualizar hoje?</h1>
+  <p class="admin-lead">Edite os textos, fotos e contatos do site. Clique em <strong>Salvar alterações</strong> ao final para publicar no navegador atual.</p>
+
+  <form id="adminForm">
+    <fieldset>
+      <legend>Identidade</legend>
+      <label>Nome da loja</label>
+      <input type="text" id="marca">
+    </fieldset>
+
+    <fieldset>
+      <legend>Capa (topo do site)</legend>
+      <label>Título de destaque <small>Pode usar &lt;em&gt;palavra&lt;/em&gt; para deixar uma palavra em itálico.</small></label>
+      <textarea id="heroTitulo"></textarea>
+      <label>Texto de apoio</label>
+      <textarea id="heroTexto"></textarea>
+    </fieldset>
+
+    <fieldset>
+      <legend>Sobre a loja</legend>
+      <label>Título da seção</label>
+      <input type="text" id="sobreTitulo">
+      <label>Texto</label>
+      <textarea id="sobreTexto"></textarea>
+      <label>Foto da loja (link da imagem)</label>
+      <input type="url" id="sobreImagem">
+    </fieldset>
+
+    <fieldset>
+      <legend>Vitrine (fotos em destaque)</legend>
+      <div id="vitrineList"></div>
+      <button type="button" class="add-btn" id="addVitrine">+ Adicionar foto na vitrine</button>
+    </fieldset>
+
+    <fieldset>
+      <legend>Novidades</legend>
+      <div id="novidadesList"></div>
+      <button type="button" class="add-btn" id="addNovidade">+ Adicionar novidade</button>
+    </fieldset>
+
+    <fieldset>
+      <legend>Contato</legend>
+      <div class="grid2">
+        <div>
+          <label>WhatsApp <small>Só números, com DDD e código do país (ex: 5541999999999)</small></label>
+          <input type="tel" id="whatsappNumero">
+        </div>
+        <div>
+          <label>Usuário do Instagram <small>Como aparece no botão, ex: @nomedaloja</small></label>
+          <input type="text" id="instagramUsuario">
+        </div>
+      </div>
+      <label>Link do Instagram</label>
+      <input type="url" id="instagramUrl">
+      <label>Mensagem inicial do WhatsApp</label>
+      <input type="text" id="whatsappMensagem">
+    </fieldset>
+
+    <fieldset>
+      <legend>Localização</legend>
+      <div class="grid2">
+        <div>
+          <label>Endereço — linha 1</label>
+          <input type="text" id="enderecoLinha1">
+        </div>
+        <div>
+          <label>Endereço — linha 2</label>
+          <input type="text" id="enderecoLinha2">
+        </div>
+      </div>
+      <label>Horário de funcionamento</label>
+      <input type="text" id="horario">
+      <label>Link do mapa incorporado <small>No Google Maps: Compartilhar → Incorporar um mapa → copie o link do "src".</small></label>
+      <input type="url" id="mapaEmbedUrl">
+    </fieldset>
+
+    <div class="admin-actions">
+      <button type="submit" class="btn-admin btn-primary">Salvar alterações</button>
+      <button type="button" class="btn-admin btn-secondary" id="resetBtn">Restaurar padrão</button>
+    </div>
+    <p class="save-msg" id="saveMsg">Alterações salvas. Abra "Ver site" para conferir.</p>
+  </form>
+
+  <p class="aviso">Este painel é um protótipo de front-end: as alterações ficam guardadas neste navegador (localStorage). Para a dona da loja editar de qualquer computador ou celular e todo mundo ver a mudança, o próximo passo é ligar este painel a um backend/CMS simples.</p>
+</div>
+
+<script src="data.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
