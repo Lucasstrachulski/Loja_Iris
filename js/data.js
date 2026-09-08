@@ -88,5 +88,11 @@ function carregarConteudo(){
 }
 
 function salvarConteudo(dados){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
+    return true;
+  }catch(e){
+    console.error('Não foi possível salvar: armazenamento do navegador cheio.', e);
+    return false;
+  }
 }

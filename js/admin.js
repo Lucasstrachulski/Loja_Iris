@@ -13,6 +13,36 @@
     return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
+  /* ---- Fotos escolhidas do celular/computador: redimensiona e comprime
+     no navegador (sem servidor) antes de guardar, pra caber no localStorage. ---- */
+  function arquivoParaImagem(file, ladoMaximo, formatoSaida, qualidade){
+    return new Promise((resolve, reject) => {
+      const leitor = new FileReader();
+      leitor.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          let { width, height } = img;
+          if (width > ladoMaximo || height > ladoMaximo){
+            if (width > height){ height = Math.round(height * ladoMaximo / width); width = ladoMaximo; }
+            else { width = Math.round(width * ladoMaximo / height); height = ladoMaximo; }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width; canvas.height = height;
+          canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL(formatoSaida, qualidade));
+        };
+        img.onerror = () => reject(new Error('Não foi possível ler essa imagem.'));
+        img.src = leitor.result;
+      };
+      leitor.onerror = () => reject(new Error('Não foi possível ler esse arquivo.'));
+      leitor.readAsDataURL(file);
+    });
+  }
+  function fotoParaDataUrl(file){ return arquivoParaImagem(file, 1600, 'image/jpeg', 0.82); }
+  function logoParaDataUrl(file){
+    return arquivoParaImagem(file, 700, file.type === 'image/png' ? 'image/png' : 'image/jpeg', 0.9);
+  }
+
   function entrarNoPainel(){
     document.getElementById('loginCard').style.display = 'none';
     document.getElementById('adminShell').style.display = 'block';
@@ -70,8 +100,13 @@
     lista.innerHTML = dados.sobreGaleria.map((item, i) => `
       <div class="repeat-item" data-i="${i}">
         <button type="button" class="remove-btn" data-remove-sobre-galeria="${i}">remover</button>
-        <label>Link da imagem</label>
-        <input type="url" data-sobre-galeria-campo="imagem" data-i="${i}" value="${item.imagem}">
+        <label>Foto</label>
+        <div class="img-picker">
+          <img class="img-preview" src="${item.imagem}" alt="">
+          <label class="file-btn">Escolher foto do celular
+            <input type="file" accept="image/*" data-sobre-galeria-foto="${i}">
+          </label>
+        </div>
         <label>Legenda</label>
         <input type="text" data-sobre-galeria-campo="legenda" data-i="${i}" value="${item.legenda}">
       </div>
@@ -90,6 +125,15 @@
     const i = e.target.getAttribute('data-i');
     if (campo){ dados.sobreGaleria[Number(i)][campo] = e.target.value; }
   });
+  document.getElementById('sobreGaleriaList').addEventListener('change', async (e) => {
+    const i = e.target.getAttribute('data-sobre-galeria-foto');
+    const file = e.target.files && e.target.files[0];
+    if (i === null || !file) return;
+    try{
+      dados.sobreGaleria[Number(i)].imagem = await fotoParaDataUrl(file);
+      renderizarSobreGaleria();
+    }catch(err){ alert(err.message); }
+  });
 
   /* ---- Vitrine (lista repetível) ---- */
   function renderizarVitrine(){
@@ -97,8 +141,13 @@
     lista.innerHTML = dados.vitrine.map((item, i) => `
       <div class="repeat-item" data-i="${i}">
         <button type="button" class="remove-btn" data-remove-vitrine="${i}">remover</button>
-        <label>Link da imagem</label>
-        <input type="url" data-vitrine-campo="imagem" data-i="${i}" value="${item.imagem}">
+        <label>Foto</label>
+        <div class="img-picker">
+          <img class="img-preview" src="${item.imagem}" alt="">
+          <label class="file-btn">Escolher foto do celular
+            <input type="file" accept="image/*" data-vitrine-foto="${i}">
+          </label>
+        </div>
         <label>Legenda</label>
         <input type="text" data-vitrine-campo="legenda" data-i="${i}" value="${item.legenda}">
       </div>
@@ -117,6 +166,15 @@
     const i = e.target.getAttribute('data-i');
     if (campo){ dados.vitrine[Number(i)][campo] = e.target.value; }
   });
+  document.getElementById('vitrineList').addEventListener('change', async (e) => {
+    const i = e.target.getAttribute('data-vitrine-foto');
+    const file = e.target.files && e.target.files[0];
+    if (i === null || !file) return;
+    try{
+      dados.vitrine[Number(i)].imagem = await fotoParaDataUrl(file);
+      renderizarVitrine();
+    }catch(err){ alert(err.message); }
+  });
 
   /* ---- Marcas (lista repetível) ---- */
   function renderizarMarcas(){
@@ -124,8 +182,13 @@
     lista.innerHTML = dados.marcas.map((item, i) => `
       <div class="repeat-item" data-i="${i}">
         <button type="button" class="remove-btn" data-remove-marca="${i}">remover</button>
-        <label>Link do logo</label>
-        <input type="url" data-marca-campo="imagem" data-i="${i}" value="${item.imagem}">
+        <label>Logo</label>
+        <div class="img-picker">
+          <img class="img-preview" src="${item.imagem}" alt="">
+          <label class="file-btn">Escolher logo do celular
+            <input type="file" accept="image/*" data-marca-foto="${i}">
+          </label>
+        </div>
         <label>Nome da marca</label>
         <input type="text" data-marca-campo="nome" data-i="${i}" value="${item.nome}">
       </div>
@@ -144,6 +207,15 @@
     const i = e.target.getAttribute('data-i');
     if (campo){ dados.marcas[Number(i)][campo] = e.target.value; }
   });
+  document.getElementById('marcasList').addEventListener('change', async (e) => {
+    const i = e.target.getAttribute('data-marca-foto');
+    const file = e.target.files && e.target.files[0];
+    if (i === null || !file) return;
+    try{
+      dados.marcas[Number(i)].imagem = await logoParaDataUrl(file);
+      renderizarMarcas();
+    }catch(err){ alert(err.message); }
+  });
 
   /* ---- Salvar / Restaurar ---- */
   document.getElementById('adminForm').addEventListener('submit', (e) => {
@@ -156,7 +228,11 @@
     const iframeColado = dados.mapaEmbedUrl.match(/src=["']([^"']+)["']/i);
     if (iframeColado) dados.mapaEmbedUrl = iframeColado[1];
     dados.mapaEmbedUrl = dados.mapaEmbedUrl.trim();
-    salvarConteudo(dados);
+    const salvou = salvarConteudo(dados);
+    if (!salvou){
+      alert('Não deu pra salvar: as fotos escolhidas juntas passaram do espaço que o navegador permite guardar. Tente usar menos fotos ou fotos menores.');
+      return;
+    }
     const msg = document.getElementById('saveMsg');
     msg.classList.add('show');
     setTimeout(() => msg.classList.remove('show'), 3200);
