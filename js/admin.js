@@ -1,16 +1,55 @@
 (function(){
   let dados = carregarConteudo();
 
-  /* ---- Login simples (protótipo, sem backend) ---- */
-  document.getElementById('loginBtn').addEventListener('click', () => {
+  /* ---- Login com senha (protótipo de front-end: a checagem roda no navegador,
+     não em um servidor. Serve para barrar acesso casual, não é segurança real.
+     Para trocar a senha: gere o hash SHA-256 dela (ex: no console do navegador
+     rodando `await sha256Hex('novaSenha')`) e substitua o valor abaixo. ---- */
+  const SENHA_HASH = '0f77bbbb3b3499d03da1447a61b27b18a31279f251e563247c45467936923f58'; // senha atual: iris2026
+  const SESSAO_KEY = 'loja-admin-autenticado';
+
+  async function sha256Hex(texto){
+    const buffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(texto));
+    return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  function entrarNoPainel(){
     document.getElementById('loginCard').style.display = 'none';
     document.getElementById('adminShell').style.display = 'block';
     preencherFormulario();
+  }
+
+  async function tentarLogin(){
+    const campo = document.getElementById('loginSenha');
+    const hash = await sha256Hex(campo.value);
+    if (hash === SENHA_HASH){
+      sessionStorage.setItem(SESSAO_KEY, '1');
+      document.getElementById('loginErro').style.display = 'none';
+      entrarNoPainel();
+    } else {
+      document.getElementById('loginErro').style.display = 'block';
+      campo.value = '';
+      campo.focus();
+    }
+  }
+
+  document.getElementById('loginBtn').addEventListener('click', tentarLogin);
+  document.getElementById('loginSenha').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') tentarLogin();
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    sessionStorage.removeItem(SESSAO_KEY);
+    document.getElementById('adminShell').style.display = 'none';
+    document.getElementById('loginCard').style.display = 'block';
+    document.getElementById('loginSenha').value = '';
   });
 
   const camposSimples = [
     'marca','heroTitulo','heroTexto',
-    'sobreTitulo','sobreTexto','sobreImagem',
+    'sobreTitulo','sobreTexto',
+    'marcasTitulo','marcasNota',
     'whatsappNumero','whatsappMensagem','instagramUsuario','instagramUrl',
     'enderecoLinha1','enderecoLinha2','horario','mapaEmbedUrl'
   ];
@@ -20,9 +59,37 @@
       const el = document.getElementById(id);
       if (el) el.value = dados[id] ?? '';
     });
+    renderizarSobreGaleria();
     renderizarVitrine();
-    renderizarNovidades();
+    renderizarMarcas();
   }
+
+  /* ---- Fotos da loja (lista repetível) ---- */
+  function renderizarSobreGaleria(){
+    const lista = document.getElementById('sobreGaleriaList');
+    lista.innerHTML = dados.sobreGaleria.map((item, i) => `
+      <div class="repeat-item" data-i="${i}">
+        <button type="button" class="remove-btn" data-remove-sobre-galeria="${i}">remover</button>
+        <label>Link da imagem</label>
+        <input type="url" data-sobre-galeria-campo="imagem" data-i="${i}" value="${item.imagem}">
+        <label>Legenda</label>
+        <input type="text" data-sobre-galeria-campo="legenda" data-i="${i}" value="${item.legenda}">
+      </div>
+    `).join('');
+  }
+  document.getElementById('addSobreGaleria').addEventListener('click', () => {
+    dados.sobreGaleria.push({ imagem: '', legenda: '' });
+    renderizarSobreGaleria();
+  });
+  document.getElementById('sobreGaleriaList').addEventListener('click', (e) => {
+    const i = e.target.getAttribute('data-remove-sobre-galeria');
+    if (i !== null){ dados.sobreGaleria.splice(Number(i), 1); renderizarSobreGaleria(); }
+  });
+  document.getElementById('sobreGaleriaList').addEventListener('input', (e) => {
+    const campo = e.target.getAttribute('data-sobre-galeria-campo');
+    const i = e.target.getAttribute('data-i');
+    if (campo){ dados.sobreGaleria[Number(i)][campo] = e.target.value; }
+  });
 
   /* ---- Vitrine (lista repetível) ---- */
   function renderizarVitrine(){
@@ -51,35 +118,31 @@
     if (campo){ dados.vitrine[Number(i)][campo] = e.target.value; }
   });
 
-  /* ---- Novidades (lista repetível) ---- */
-  function renderizarNovidades(){
-    const lista = document.getElementById('novidadesList');
-    lista.innerHTML = dados.novidades.map((item, i) => `
+  /* ---- Marcas (lista repetível) ---- */
+  function renderizarMarcas(){
+    const lista = document.getElementById('marcasList');
+    lista.innerHTML = dados.marcas.map((item, i) => `
       <div class="repeat-item" data-i="${i}">
-        <button type="button" class="remove-btn" data-remove-novidade="${i}">remover</button>
-        <label>Link da imagem</label>
-        <input type="url" data-novidade-campo="imagem" data-i="${i}" value="${item.imagem}">
-        <label>Etiqueta <small>ex: Recém-chegada, Últimas unidades</small></label>
-        <input type="text" data-novidade-campo="tag" data-i="${i}" value="${item.tag}">
-        <label>Título</label>
-        <input type="text" data-novidade-campo="titulo" data-i="${i}" value="${item.titulo}">
-        <label>Texto</label>
-        <textarea data-novidade-campo="texto" data-i="${i}">${item.texto}</textarea>
+        <button type="button" class="remove-btn" data-remove-marca="${i}">remover</button>
+        <label>Link do logo</label>
+        <input type="url" data-marca-campo="imagem" data-i="${i}" value="${item.imagem}">
+        <label>Nome da marca</label>
+        <input type="text" data-marca-campo="nome" data-i="${i}" value="${item.nome}">
       </div>
     `).join('');
   }
-  document.getElementById('addNovidade').addEventListener('click', () => {
-    dados.novidades.push({ imagem:'', tag:'', titulo:'', texto:'' });
-    renderizarNovidades();
+  document.getElementById('addMarca').addEventListener('click', () => {
+    dados.marcas.push({ imagem:'', nome:'' });
+    renderizarMarcas();
   });
-  document.getElementById('novidadesList').addEventListener('click', (e) => {
-    const i = e.target.getAttribute('data-remove-novidade');
-    if (i !== null){ dados.novidades.splice(Number(i), 1); renderizarNovidades(); }
+  document.getElementById('marcasList').addEventListener('click', (e) => {
+    const i = e.target.getAttribute('data-remove-marca');
+    if (i !== null){ dados.marcas.splice(Number(i), 1); renderizarMarcas(); }
   });
-  document.getElementById('novidadesList').addEventListener('input', (e) => {
-    const campo = e.target.getAttribute('data-novidade-campo');
+  document.getElementById('marcasList').addEventListener('input', (e) => {
+    const campo = e.target.getAttribute('data-marca-campo');
     const i = e.target.getAttribute('data-i');
-    if (campo){ dados.novidades[Number(i)][campo] = e.target.value; }
+    if (campo){ dados.marcas[Number(i)][campo] = e.target.value; }
   });
 
   /* ---- Salvar / Restaurar ---- */
@@ -89,6 +152,10 @@
       const el = document.getElementById(id);
       if (el) dados[id] = el.value;
     });
+    /* Quem copia do Google Maps às vezes cola o <iframe> inteiro em vez de só o link: extrai o src. */
+    const iframeColado = dados.mapaEmbedUrl.match(/src=["']([^"']+)["']/i);
+    if (iframeColado) dados.mapaEmbedUrl = iframeColado[1];
+    dados.mapaEmbedUrl = dados.mapaEmbedUrl.trim();
     salvarConteudo(dados);
     const msg = document.getElementById('saveMsg');
     msg.classList.add('show');
@@ -101,4 +168,10 @@
     dados = carregarConteudo();
     preencherFormulario();
   });
+
+  /* Entra direto se já autenticou nesta aba antes (precisa vir por último:
+     depende de preencherFormulario e das funções de renderização acima). */
+  if (sessionStorage.getItem(SESSAO_KEY) === '1'){
+    entrarNoPainel();
+  }
 })();

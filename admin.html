@@ -61,16 +61,20 @@
 <div id="loginCard" class="login-card">
   <p class="eyebrow">Área administrativa</p>
   <h2>Entrar</h2>
-  <p>Acesso restrito para edição do site. (Protótipo: sem senha real cadastrada ainda — qualquer valor entra. Em produção, isso precisa de um login de verdade no backend.)</p>
+  <p>Acesso restrito para edição do site. Só quem tem a senha entra. (Protótipo de front-end: a proteção fica no navegador, não em um servidor — suficiente para afastar curiosos, mas não é um login de verdade em produção.)</p>
   <label for="loginSenha">Senha</label>
-  <input type="text" id="loginSenha" placeholder="••••••">
+  <input type="password" id="loginSenha" placeholder="••••••">
+  <p class="login-erro" id="loginErro" style="display:none; color:#a33; font-size:13px; margin-top:8px;">Senha incorreta. Tente novamente.</p>
   <button class="btn-admin btn-primary" id="loginBtn" style="margin-top:16px; width:100%;">Entrar</button>
 </div>
 
 <div class="admin-shell" id="adminShell" style="display:none;">
   <div class="admin-top">
     <span class="brand-mark" style="color:var(--carvao); font-size:18px;">Painel administrativo</span>
-    <a href="index.html">← Ver site</a>
+    <span style="display:flex; gap:16px;">
+      <a href="index.html">← Ver site</a>
+      <a href="#" id="logoutBtn">Sair</a>
+    </span>
   </div>
   <h1>O que você quer atualizar hoje?</h1>
   <p class="admin-lead">Edite os textos, fotos e contatos do site. Clique em <strong>Salvar alterações</strong> ao final para publicar no navegador atual.</p>
@@ -96,8 +100,12 @@
       <input type="text" id="sobreTitulo">
       <label>Texto</label>
       <textarea id="sobreTexto"></textarea>
-      <label>Foto da loja (link da imagem)</label>
-      <input type="url" id="sobreImagem">
+    </fieldset>
+
+    <fieldset>
+      <legend>Fotos da loja</legend>
+      <div id="sobreGaleriaList"></div>
+      <button type="button" class="add-btn" id="addSobreGaleria">+ Adicionar foto da loja</button>
     </fieldset>
 
     <fieldset>
@@ -107,9 +115,13 @@
     </fieldset>
 
     <fieldset>
-      <legend>Novidades</legend>
-      <div id="novidadesList"></div>
-      <button type="button" class="add-btn" id="addNovidade">+ Adicionar novidade</button>
+      <legend>Marcas</legend>
+      <label>Título da seção</label>
+      <input type="text" id="marcasTitulo">
+      <label>Texto de apoio</label>
+      <input type="text" id="marcasNota">
+      <div id="marcasList"></div>
+      <button type="button" class="add-btn" id="addMarca">+ Adicionar marca</button>
     </fieldset>
 
     <fieldset>

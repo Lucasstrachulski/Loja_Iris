@@ -17,7 +17,11 @@ const CONTEUDO_PADRAO = {
   sobreEyebrow: 'A loja',
   sobreTitulo: 'Curadoria antes de tudo',
   sobreTexto: 'Cada peça que chega até a vitrine passa por uma escolha cuidadosa. Não trabalhamos com estoque parado nem reposição em série — o que você vê é o que existe, em quantidade limitada.',
-  sobreImagem: 'https://picsum.photos/seed/loja-interior/1000/1250',
+  sobreGaleria: [
+    { imagem: 'img/loja/logo-fachada.jpg', legenda: 'Íris' },
+    { imagem: 'img/loja/interior.jpg', legenda: 'Interior da loja' },
+    { imagem: 'img/loja/fachada.jpg', legenda: 'Fachada da loja' }
+  ],
   sobreLista: [
     'Peças selecionadas, sem reposição automática',
     'Atendimento próximo, com hora marcada',
@@ -33,31 +37,38 @@ const CONTEUDO_PADRAO = {
     { imagem: 'https://picsum.photos/seed/peca-06/900/1200', legenda: 'Edição limitada' }
   ],
 
-  novidades: [
-    {
-      imagem: 'https://picsum.photos/seed/novidade-01/700/540',
-      tag: 'Recém-chegada',
-      titulo: 'Nova seleção de inverno',
-      texto: 'Peças escolhidas a dedo, direto da vitrine para você conferir pessoalmente.'
-    },
-    {
-      imagem: 'https://picsum.photos/seed/novidade-02/700/540',
-      tag: 'Últimas unidades',
-      titulo: 'Edição limitada',
-      texto: 'Quantidade reduzida — sem reposição quando as unidades atuais se esgotarem.'
-    },
-    {
-      imagem: 'https://picsum.photos/seed/novidade-03/700/540',
-      tag: 'Em breve',
-      titulo: 'Próxima coleção',
-      texto: 'Uma prévia do que chega na loja nas próximas semanas.'
-    }
+  marcasEyebrow: 'Marcas',
+  marcasTitulo: 'Marcas que trabalhamos',
+  marcasNota: 'Uma seleção das grifes que passam pela nossa curadoria.',
+  marcas: [
+    { imagem: 'img/marcas/animale.png', nome: 'Animale' },
+    { imagem: 'img/marcas/dudalina.png', nome: 'Dudalina' },
+    { imagem: 'img/marcas/cantao.png', nome: 'Cantão' },
+    { imagem: 'img/marcas/reserva.png', nome: 'Reserva' },
+    { imagem: 'img/marcas/dress-to.png', nome: 'Dress To' },
+    { imagem: 'img/marcas/maria-filo.png', nome: 'Maria Filô' },
+    { imagem: 'img/marcas/sacada.png', nome: 'Sacada' },
+    { imagem: 'img/marcas/shoulder.png', nome: 'Shoulder' },
+    { imagem: 'img/marcas/via-tricot.png', nome: 'Via Tricot' },
+    { imagem: 'img/marcas/cia-maritima.png', nome: 'Cia. Marítima' },
+    { imagem: 'img/marcas/viviane-furrier.png', nome: 'Viviane Furrier' },
+    { imagem: 'img/marcas/lado-avesso.png', nome: 'Lado Avesso' },
+    { imagem: 'img/marcas/basico-brasil.png', nome: 'Básico Brasil' },
+    { imagem: 'img/marcas/borda-barroca.png', nome: 'Borda Barroca' },
+    { imagem: 'img/marcas/ambi-por-anselmi.png', nome: 'Ambi por Anselmi' },
+    { imagem: 'img/marcas/amarras.png', nome: 'Amarras' },
+    { imagem: 'img/marcas/gida.png', nome: 'Gida' },
+    { imagem: 'img/marcas/lucidez.png', nome: 'Lucidez' },
+    { imagem: 'img/marcas/malise.png', nome: 'Malise' },
+    { imagem: 'img/marcas/scalon.png', nome: 'Scalon' },
+    { imagem: 'img/marcas/smartbag.jpg', nome: 'Smartbag' },
+    { imagem: 'img/marcas/stroke.jpg', nome: 'Stroke' }
   ],
 
-  whatsappNumero: '5541999999999',
+  whatsappNumero: '5542999477512',
   whatsappMensagem: 'Olá! Vi o site e gostaria de saber mais.',
-  instagramUsuario: '@nomedaloja',
-  instagramUrl: 'https://instagram.com/nomedaloja',
+  instagramUsuario: 'irismodamulher',
+  instagramUrl: 'https://www.instagram.com/irismodamulher/',
   enderecoLinha1: 'Av. Bonifácio Vilela, 175 — Centro',
   enderecoLinha2: 'Ponta Grossa, PR',
   horario: 'Ter. a sáb., 10h às 19h',

@@ -21,7 +21,7 @@
     <ul class="nav-links" id="navLinks">
       <li><a href="#vitrine">Vitrine</a></li>
       <li><a href="#sobre">Sobre</a></li>
-      <li><a href="#novidades">Novidades</a></li>
+      <li><a href="#marcas">Marcas</a></li>
       <li><a href="#localizacao">Localização</a></li>
       <li><a href="#contato">Contato</a></li>
     </ul>
@@ -56,9 +56,7 @@
 
 <section class="sobre" id="sobre">
   <div class="wrap">
-    <div class="sobre-img reveal">
-      <img id="sobreImagem" src="" alt="Interior da loja">
-    </div>
+    <div class="sobre-galeria reveal" id="sobreGaleria"></div>
     <div class="sobre-text reveal">
       <p class="eyebrow" id="sobreEyebrow">A loja</p>
       <h2 id="sobreTitulo">Curadoria antes de tudo</h2>
@@ -68,16 +66,16 @@
   </div>
 </section>
 
-<section class="novidades" id="novidades">
+<section class="marcas" id="marcas">
   <div class="wrap">
     <div class="section-head reveal">
       <div>
-        <p class="eyebrow">Novidades</p>
-        <h2>O que chegou por último</h2>
+        <p class="eyebrow" id="marcasEyebrow">Marcas</p>
+        <h2 id="marcasTitulo">Marcas que trabalhamos</h2>
       </div>
-      <p class="note">Atualizado direto pela loja — sempre vale dar uma olhada.</p>
+      <p class="note" id="marcasNota">Uma seleção das grifes que passam pela nossa curadoria.</p>
     </div>
-    <div class="novidades-grid" id="novidadesGrid"></div>
+    <div class="marcas-grid" id="marcasGrid"></div>
   </div>
 </section>
 
@@ -95,8 +93,10 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
         <span id="horarioTexto"></span>
       </div>
+      <a id="mapaLink" class="mapa-link" target="_blank" rel="noopener">Abrir no Google Maps ↗</a>
     </div>
     <div class="map-frame reveal">
+      <span class="map-frame-loading">Carregando mapa…</span>
       <iframe id="mapaFrame" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Mapa de localização da loja"></iframe>
     </div>
   </div>

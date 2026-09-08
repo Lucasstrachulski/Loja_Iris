@@ -15,7 +15,10 @@
   document.getElementById('sobreEyebrow').textContent = dados.sobreEyebrow;
   document.getElementById('sobreTitulo').textContent = dados.sobreTitulo;
   document.getElementById('sobreTexto').textContent = dados.sobreTexto;
-  document.getElementById('sobreImagem').src = dados.sobreImagem;
+  const sobreGaleria = document.getElementById('sobreGaleria');
+  sobreGaleria.innerHTML = dados.sobreGaleria.map((item, i) => `
+    <div class="sobre-img" data-index="${i}"><img src="${item.imagem}" alt="${item.legenda}" loading="lazy"></div>
+  `).join('');
   const listaEl = document.getElementById('sobreLista');
   listaEl.innerHTML = dados.sobreLista.map(item => `<li>${item}</li>`).join('');
 
@@ -29,17 +32,16 @@
     </figure>
   `).join('');
 
-  /* ---- Novidades ---- */
-  const novidadesGrid = document.getElementById('novidadesGrid');
-  novidadesGrid.innerHTML = dados.novidades.map(n => `
-    <article class="novidade-card reveal">
-      <div class="novidade-img"><img src="${n.imagem}" alt="${n.titulo}" loading="lazy"></div>
-      <div class="novidade-body">
-        <span class="eyebrow novidade-tag">${n.tag}</span>
-        <h3>${n.titulo}</h3>
-        <p>${n.texto}</p>
-      </div>
-    </article>
+  /* ---- Marcas ---- */
+  document.getElementById('marcasEyebrow').textContent = dados.marcasEyebrow;
+  document.getElementById('marcasTitulo').textContent = dados.marcasTitulo;
+  document.getElementById('marcasNota').textContent = dados.marcasNota;
+  const marcasGrid = document.getElementById('marcasGrid');
+  marcasGrid.innerHTML = dados.marcas.map(m => `
+    <div class="marca-card reveal">
+      <div class="marca-logo"><img src="${m.imagem}" alt="${m.nome}" loading="lazy"></div>
+      <span class="marca-nome">${m.nome}</span>
+    </div>
   `).join('');
 
   /* ---- Localização ---- */
@@ -48,7 +50,12 @@
   document.getElementById('enderecoLinhas').textContent =
     `${dados.enderecoLinha1} · ${dados.enderecoLinha2}`;
   document.getElementById('horarioTexto').textContent = dados.horario;
-  document.getElementById('mapaFrame').src = dados.mapaEmbedUrl;
+  const mapaFrame = document.getElementById('mapaFrame');
+  const mapaFrameWrap = mapaFrame.closest('.map-frame');
+  mapaFrame.addEventListener('load', () => mapaFrameWrap.classList.add('loaded'));
+  mapaFrame.src = dados.mapaEmbedUrl;
+  document.getElementById('mapaLink').href =
+    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(dados.enderecoLinha1 + ', ' + dados.enderecoLinha2)}`;
 
   /* ---- Contato ---- */
   const waLink = `https://wa.me/${dados.whatsappNumero}?text=${encodeURIComponent(dados.whatsappMensagem)}`;
@@ -109,6 +116,16 @@
     const i = Number(item.dataset.index);
     lightboxImg.src = dados.vitrine[i].imagem;
     lightboxImg.alt = dados.vitrine[i].legenda;
+    lightbox.classList.add('open');
+  });
+
+  /* Lightbox das fotos da loja (seção Sobre) */
+  sobreGaleria.addEventListener('click', (e) => {
+    const item = e.target.closest('.sobre-img');
+    if (!item) return;
+    const i = Number(item.dataset.index);
+    lightboxImg.src = dados.sobreGaleria[i].imagem;
+    lightboxImg.alt = dados.sobreGaleria[i].legenda;
     lightbox.classList.add('open');
   });
   document.getElementById('lightboxClose').addEventListener('click', () => lightbox.classList.remove('open'));
