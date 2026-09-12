@@ -89,10 +89,30 @@
       const el = document.getElementById(id);
       if (el) el.value = dados[id] ?? '';
     });
+    renderizarHeroImagem();
     renderizarSobreGaleria();
     renderizarVitrine();
     renderizarMarcas();
   }
+
+  /* ---- Foto de capa ---- */
+  function renderizarHeroImagem(){
+    const preview = document.getElementById('heroImagemPreview');
+    preview.src = dados.heroImagem || '';
+    preview.style.display = dados.heroImagem ? '' : 'none';
+  }
+  document.getElementById('heroImagemArquivo').addEventListener('change', async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    try{
+      dados.heroImagem = await fotoParaDataUrl(file);
+      renderizarHeroImagem();
+    }catch(err){ alert(err.message); }
+  });
+  document.getElementById('removerHeroImagem').addEventListener('click', () => {
+    dados.heroImagem = '';
+    renderizarHeroImagem();
+  });
 
   /* ---- Fotos da loja (lista repetível) ---- */
   function renderizarSobreGaleria(){
@@ -109,11 +129,24 @@
         </div>
         <label>Legenda</label>
         <input type="text" data-sobre-galeria-campo="legenda" data-i="${i}" value="${item.legenda}">
+        <label>Tamanho no mosaico</label>
+        <select data-sobre-galeria-campo="tamanho" data-i="${i}">
+          ${Object.entries(TAMANHOS_GALERIA_LABEL).map(([valor, rotulo]) =>
+            `<option value="${valor}" ${item.tamanho === valor ? 'selected' : ''}>${rotulo}</option>`
+          ).join('')}
+        </select>
       </div>
     `).join('');
   }
+  const TAMANHOS_GALERIA_LABEL = {
+    grande: 'Grande (ocupa a linha toda)',
+    retangulo: 'Retângulo',
+    vertical: 'Vertical (mais alta)',
+    larga: 'Larga (mais baixa)',
+    pequena: 'Pequena'
+  };
   document.getElementById('addSobreGaleria').addEventListener('click', () => {
-    dados.sobreGaleria.push({ imagem: '', legenda: '' });
+    dados.sobreGaleria.push({ imagem: '', legenda: '', tamanho: 'pequena' });
     renderizarSobreGaleria();
   });
   document.getElementById('sobreGaleriaList').addEventListener('click', (e) => {
@@ -191,11 +224,13 @@
         </div>
         <label>Nome da marca</label>
         <input type="text" data-marca-campo="nome" data-i="${i}" value="${item.nome}">
+        <label>Link ao clicar <small>Opcional. Ex: página da marca no Instagram ou site. Deixe em branco para não ser clicável.</small></label>
+        <input type="url" data-marca-campo="link" data-i="${i}" value="${item.link || ''}">
       </div>
     `).join('');
   }
   document.getElementById('addMarca').addEventListener('click', () => {
-    dados.marcas.push({ imagem:'', nome:'' });
+    dados.marcas.push({ imagem:'', nome:'', link:'' });
     renderizarMarcas();
   });
   document.getElementById('marcasList').addEventListener('click', (e) => {

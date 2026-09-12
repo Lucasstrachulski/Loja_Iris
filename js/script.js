@@ -8,19 +8,28 @@
   document.getElementById('brandFooter').textContent = dados.marca;
 
   /* ---- Hero ---- */
-  document.getElementById('heroTitulo').innerHTML = dados.heroTitulo;
-  document.getElementById('heroTexto').textContent = dados.heroTexto;
+  if (dados.heroImagem){
+    document.getElementById('topo').style.backgroundImage = `url("${dados.heroImagem}")`;
+  }
 
   /* ---- Sobre ---- */
   document.getElementById('sobreEyebrow').textContent = dados.sobreEyebrow;
   document.getElementById('sobreTitulo').textContent = dados.sobreTitulo;
   document.getElementById('sobreTexto').textContent = dados.sobreTexto;
   const sobreGaleria = document.getElementById('sobreGaleria');
-  sobreGaleria.innerHTML = dados.sobreGaleria.map((item, i) => `
-    <div class="sobre-img" data-index="${i}"><img src="${item.imagem}" alt="${item.legenda}" loading="lazy"></div>
-  `).join('');
-  const listaEl = document.getElementById('sobreLista');
-  listaEl.innerHTML = dados.sobreLista.map(item => `<li>${item}</li>`).join('');
+  const TAMANHOS_GALERIA = {
+    grande:    { col: 3, row: 3 },
+    retangulo: { col: 2, row: 2 },
+    vertical:  { col: 1, row: 2 },
+    larga:     { col: 2, row: 1 },
+    pequena:   { col: 1, row: 1 }
+  };
+  sobreGaleria.innerHTML = dados.sobreGaleria.map((item, i) => {
+    const t = TAMANHOS_GALERIA[item.tamanho] || TAMANHOS_GALERIA.pequena;
+    return `
+    <div class="sobre-img" data-index="${i}" style="grid-column: span ${t.col}; grid-row: span ${t.row};"><img src="${item.imagem}" alt="${item.legenda}" loading="lazy"></div>
+  `;
+  }).join('');
 
   /* ---- Vitrine (galeria com efeito cortina) ---- */
   const vitrineGrid = document.getElementById('vitrineGrid');
@@ -37,16 +46,15 @@
   document.getElementById('marcasTitulo').textContent = dados.marcasTitulo;
   document.getElementById('marcasNota').textContent = dados.marcasNota;
   const marcasGrid = document.getElementById('marcasGrid');
-  marcasGrid.innerHTML = dados.marcas.map(m => `
-    <div class="marca-card reveal">
-      <div class="marca-logo"><img src="${m.imagem}" alt="${m.nome}" loading="lazy"></div>
-      <span class="marca-nome">${m.nome}</span>
-    </div>
-  `).join('');
+  const marcasItem = m => {
+    const img = `<img src="${m.imagem}" alt="${m.nome}" loading="lazy">`;
+    return m.link
+      ? `<a class="marca-logo" href="${m.link}" target="_blank" rel="noopener" aria-label="${m.nome}">${img}</a>`
+      : `<button type="button" class="marca-logo" aria-label="Ver ${m.nome}">${img}</button>`;
+  };
+  marcasGrid.innerHTML = dados.marcas.map(marcasItem).join('') + dados.marcas.map(marcasItem).join('');
 
   /* ---- Localização ---- */
-  document.getElementById('enderecoTexto').textContent =
-    'Endereço e horário de funcionamento, para quem prefere ver de perto antes de decidir.';
   document.getElementById('enderecoLinhas').textContent =
     `${dados.enderecoLinha1} · ${dados.enderecoLinha2}`;
   document.getElementById('horarioTexto').textContent = dados.horario;
@@ -128,6 +136,16 @@
     lightboxImg.alt = dados.sobreGaleria[i].legenda;
     lightbox.classList.add('open');
   });
+  /* Lightbox das marcas (logos sem link próprio abrem a foto ampliada) */
+  marcasGrid.addEventListener('click', (e) => {
+    const item = e.target.closest('.marca-logo');
+    if (!item || item.tagName === 'A') return;
+    const img = item.querySelector('img');
+    lightboxImg.src = img.src;
+    lightboxImg.alt = img.alt;
+    lightbox.classList.add('open');
+  });
+
   document.getElementById('lightboxClose').addEventListener('click', () => lightbox.classList.remove('open'));
   lightbox.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.classList.remove('open'); });
   window.addEventListener('keydown', (e) => { if (e.key === 'Escape') lightbox.classList.remove('open'); });

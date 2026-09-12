@@ -100,7 +100,15 @@
 
     <fieldset>
       <legend>Capa (topo do site)</legend>
-      <label>Título de destaque <small>Pode usar &lt;em&gt;palavra&lt;/em&gt; para deixar uma palavra em itálico.</small></label>
+      <label>Foto de capa <small>Aparece como fundo da capa do site. Deixe sem foto para manter o fundo escuro liso.</small></label>
+      <div class="img-picker">
+        <img class="img-preview" id="heroImagemPreview" src="" alt="">
+        <label class="file-btn">Escolher foto do celular
+          <input type="file" accept="image/*" id="heroImagemArquivo">
+        </label>
+      </div>
+      <button type="button" class="remove-btn" id="removerHeroImagem" style="position:static; margin-top:8px;">remover foto</button>
+      <label>Título de destaque <small>Pode usar &lt;em&gt;palavra&lt;/em&gt; para deixar uma palavra em itálico. Não aparece na capa no momento — reservado para uso futuro.</small></label>
       <textarea id="heroTitulo"></textarea>
       <label>Texto de apoio</label>
       <textarea id="heroTexto"></textarea>
