@@ -9,7 +9,9 @@
 
   /* ---- Hero ---- */
   if (dados.heroImagem){
-    document.getElementById('topo').style.backgroundImage = `url("${dados.heroImagem}")`;
+    const heroSection = document.getElementById('topo');
+    heroSection.style.backgroundImage = `url("${dados.heroImagem}")`;
+    heroSection.classList.add('tem-capa');
   }
 
   /* ---- Sobre ---- */
