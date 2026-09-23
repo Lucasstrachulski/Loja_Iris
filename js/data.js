@@ -21,7 +21,8 @@ const CONTEUDO_PADRAO = {
   sobreGaleria: [
     { imagem: 'img/loja/logo-fachada.jpg', legenda: 'Íris', tamanho: 'grande' },
     { imagem: 'img/loja/interior.jpg', legenda: 'Interior da loja', tamanho: 'retangulo' },
-    { imagem: 'img/loja/fachada.jpg', legenda: 'Fachada da loja', tamanho: 'vertical' },
+    /* posicao: qual parte da foto fica visível quando ela é cortada no mosaico (aqui, o letreiro centralizado). */
+    { imagem: 'img/loja/fachada.jpg', legenda: 'Fachada da loja', tamanho: 'vertical', posicao: '18% center' },
     { imagem: 'img/loja/interior-2.jpg', legenda: 'Interior da loja', tamanho: 'pequena' },
     { imagem: 'img/loja/interior-3.jpg', legenda: 'Interior da loja', tamanho: 'larga' }
   ],

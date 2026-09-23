@@ -303,11 +303,6 @@ section{ padding: clamp(64px,10vw,128px) 0; }
   width:100%; height:100%; object-fit:cover;
   transition: transform 500ms cubic-bezier(.2,.8,.2,1);
 }
-.sobre-galeria .sobre-img:first-child img{
-  transform: scale(1.35);
-  transform-origin: 27% 18%;
-}
-.sobre-galeria .sobre-img:first-child:hover img{ transform: scale(1.4); }
 .sobre-img:hover img{ transform: scale(1.05); }
 .sobre-text .eyebrow{ color: var(--acento); font-size: 15px; }
 .sobre-text h2{ color: var(--carvao); font-size: clamp(32px,4.6vw,50px); margin-top: 14px; }

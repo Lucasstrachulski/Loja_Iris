@@ -29,7 +29,7 @@
   sobreGaleria.innerHTML = dados.sobreGaleria.map((item, i) => {
     const t = TAMANHOS_GALERIA[item.tamanho] || TAMANHOS_GALERIA.pequena;
     return `
-    <div class="sobre-img" data-index="${i}" style="grid-column: span ${t.col}; grid-row: span ${t.row};"><img src="${item.imagem}" alt="${item.legenda}" loading="lazy"></div>
+    <div class="sobre-img" data-index="${i}" style="grid-column: span ${t.col}; grid-row: span ${t.row};"><img src="${item.imagem}" alt="${item.legenda}" loading="lazy"${item.posicao ? ` style="object-position: ${item.posicao};"` : ''}></div>
   `;
   }).join('');
 
