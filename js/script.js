@@ -2,7 +2,7 @@
   const dados = carregarConteudo();
 
   /* ---- Marca ---- */
-  document.title = dados.marca + ' — Vitrine';
+  document.title = dados.marca;
   document.getElementById('brandLogoBranco').alt = dados.marca;
   document.getElementById('brandLogoPreto').alt = dados.marca;
   document.getElementById('brandFooter').textContent = dados.marca;
@@ -34,8 +34,8 @@
   }).join('');
 
   /* ---- Vitrine (mosaico com efeito cortina) ---- */
-  /* Fotos sem tamanho escolhido seguem este padrão, que fecha um bloco de 5 colunas sem buracos. */
-  const PADRAO_VITRINE = ['retangulo','grande','vertical','vertical','larga','pequena'];
+  /* Fotos sem tamanho escolhido seguem este padrão, que fecha um bloco de 6 colunas sem buracos. */
+  const PADRAO_VITRINE = ['grande','larga','pequena','retangulo','pequena','pequena'];
   const vitrineGrid = document.getElementById('vitrineGrid');
   vitrineGrid.innerHTML = dados.vitrine.map((item, i) => {
     const t = TAMANHOS_GALERIA[item.tamanho] || TAMANHOS_GALERIA[PADRAO_VITRINE[i % PADRAO_VITRINE.length]];
@@ -49,16 +49,10 @@
   }).join('');
 
   /* ---- Marcas ---- */
-  document.getElementById('marcasEyebrow').textContent = dados.marcasEyebrow;
   document.getElementById('marcasTitulo').textContent = dados.marcasTitulo;
   document.getElementById('marcasNota').textContent = dados.marcasNota;
   const marcasGrid = document.getElementById('marcasGrid');
-  const marcasItem = m => {
-    const img = `<img src="${m.imagem}" alt="${m.nome}" loading="lazy">`;
-    return m.link
-      ? `<a class="marca-logo" href="${m.link}" target="_blank" rel="noopener" aria-label="${m.nome}">${img}</a>`
-      : `<button type="button" class="marca-logo" aria-label="Ver ${m.nome}">${img}</button>`;
-  };
+  const marcasItem = m => `<div class="marca-logo"><img src="${m.imagem}" alt="${m.nome}" loading="lazy"></div>`;
   marcasGrid.innerHTML = dados.marcas.map(marcasItem).join('') + dados.marcas.map(marcasItem).join('');
 
   /* ---- Localização ---- */
@@ -146,15 +140,6 @@
     const i = Number(item.dataset.index);
     lightboxImg.src = dados.sobreGaleria[i].imagem;
     lightboxImg.alt = dados.sobreGaleria[i].legenda;
-    lightbox.classList.add('open');
-  });
-  /* Lightbox das marcas (logos sem link próprio abrem a foto ampliada) */
-  marcasGrid.addEventListener('click', (e) => {
-    const item = e.target.closest('.marca-logo');
-    if (!item || item.tagName === 'A') return;
-    const img = item.querySelector('img');
-    lightboxImg.src = img.src;
-    lightboxImg.alt = img.alt;
     lightbox.classList.add('open');
   });
 

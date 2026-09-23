@@ -27,15 +27,14 @@ const CONTEUDO_PADRAO = {
   ],
 
   vitrine: [
-    { imagem: 'https://picsum.photos/seed/peca-01/900/1200', legenda: 'Coleção atual', tamanho: 'retangulo' },
-    { imagem: 'https://picsum.photos/seed/peca-02/900/1200', legenda: 'Peça exclusiva', tamanho: 'grande' },
-    { imagem: 'https://picsum.photos/seed/peca-03/900/1200', legenda: 'Edição limitada', tamanho: 'vertical' },
-    { imagem: 'https://picsum.photos/seed/peca-04/900/1200', legenda: 'Coleção atual', tamanho: 'vertical' },
-    { imagem: 'https://picsum.photos/seed/peca-05/900/1200', legenda: 'Peça exclusiva', tamanho: 'larga' },
+    { imagem: 'https://picsum.photos/seed/peca-01/900/1200', legenda: 'Coleção atual', tamanho: 'grande' },
+    { imagem: 'https://picsum.photos/seed/peca-02/900/1200', legenda: 'Peça exclusiva', tamanho: 'larga' },
+    { imagem: 'https://picsum.photos/seed/peca-03/900/1200', legenda: 'Edição limitada', tamanho: 'pequena' },
+    { imagem: 'https://picsum.photos/seed/peca-04/900/1200', legenda: 'Coleção atual', tamanho: 'retangulo' },
+    { imagem: 'https://picsum.photos/seed/peca-05/900/1200', legenda: 'Peça exclusiva', tamanho: 'pequena' },
     { imagem: 'https://picsum.photos/seed/peca-06/900/1200', legenda: 'Edição limitada', tamanho: 'pequena' }
   ],
 
-  marcasEyebrow: 'Marcas',
   marcasTitulo: 'Marcas que trabalhamos',
   marcasNota: 'Uma seleção das grifes que passam pela nossa curadoria.',
   marcas: [

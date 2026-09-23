@@ -193,7 +193,7 @@
     `).join('');
   }
   const TAMANHOS_VITRINE_LABEL = {
-    grande: 'Grande (a maior do mosaico)',
+    grande: 'Grande (metade da largura)',
     retangulo: 'Retângulo',
     vertical: 'Vertical (mais alta)',
     larga: 'Larga (mais baixa)',
@@ -237,8 +237,6 @@
         </div>
         <label>Nome da marca</label>
         <input type="text" data-marca-campo="nome" data-i="${i}" value="${item.nome}">
-        <label>Link ao clicar <small>Opcional. Ex: página da marca no Instagram ou site. Deixe em branco para não ser clicável.</small></label>
-        <input type="url" data-marca-campo="link" data-i="${i}" value="${item.link || ''}">
       </div>
     `).join('');
   }

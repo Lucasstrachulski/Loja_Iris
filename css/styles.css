@@ -228,8 +228,8 @@ section{ padding: clamp(64px,10vw,128px) 0; }
 .vitrine{ background: var(--branco); }
 .vitrine-grid{
   display:grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-auto-rows: clamp(60px, 15vw, 190px);
+  grid-template-columns: repeat(6, 1fr);
+  grid-auto-rows: clamp(90px, 13vw, 180px);
   grid-auto-flow: dense;
   gap: 6px;
 }
@@ -336,23 +336,24 @@ section{ padding: clamp(64px,10vw,128px) 0; }
 .marca-logo{
   flex: 0 0 auto;
   height: clamp(88px,10vw,120px);
-  padding: 16px 26px;
-  background: var(--branco);
+  padding: 8px 0;
+  background: transparent;
   border: none;
   border-radius: 0;
   display:flex;
   align-items:center;
   justify-content:center;
-  cursor: pointer;
-  transition: transform 250ms ease;
 }
 .marca-logo img{
   height:100%;
   width:auto;
   max-width: 200px;
   object-fit:contain;
+  /* Os logos têm fundo branco: cinza + inverter deixa o logo branco e o fundo preto;
+     o contrast(0.882) clareia esse preto até #0F0F0F (--preto, fundo da seção), então o fundo some.
+     Se mudar a cor de fundo das marcas, ajuste este valor. */
+  filter: grayscale(1) invert(1) contrast(0.882);
 }
-.marca-logo:hover{ transform: translateY(-3px); }
 @keyframes marcas-scroll{
   from{ transform: translateX(0); }
   to{ transform: translateX(-50%); }
@@ -505,6 +506,7 @@ section{ padding: clamp(64px,10vw,128px) 0; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 900px){
+  .vitrine-grid{ grid-template-columns: repeat(4,1fr); grid-auto-rows: 110px; }
   .sobre .wrap, .local .wrap{ grid-template-columns: 1fr; }
   .sobre-galeria{ grid-auto-rows: 90px; }
 }
@@ -524,4 +526,5 @@ section{ padding: clamp(64px,10vw,128px) 0; }
   .section-head .note{ text-align:left; }
 }
 @media (max-width: 480px){
+  .vitrine-grid{ grid-template-columns: repeat(3,1fr); grid-auto-rows: 90px; }
 }
