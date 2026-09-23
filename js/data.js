@@ -29,9 +29,9 @@ const CONTEUDO_PADRAO = {
 
   vitrine: [
     { imagem: 'https://picsum.photos/seed/peca-01/900/1200', legenda: 'Coleção atual', tamanho: 'grande' },
-    { imagem: 'https://picsum.photos/seed/peca-02/900/1200', legenda: 'Peça exclusiva', tamanho: 'larga' },
-    { imagem: 'https://picsum.photos/seed/peca-03/900/1200', legenda: 'Edição limitada', tamanho: 'pequena' },
-    { imagem: 'https://picsum.photos/seed/peca-04/900/1200', legenda: 'Coleção atual', tamanho: 'retangulo' },
+    { imagem: 'https://picsum.photos/seed/peca-02/900/1200', legenda: 'Peça exclusiva', tamanho: 'retangulo' },
+    { imagem: 'https://picsum.photos/seed/peca-03/900/1200', legenda: 'Edição limitada', tamanho: 'vertical' },
+    { imagem: 'https://picsum.photos/seed/peca-04/900/1200', legenda: 'Coleção atual', tamanho: 'pequena' },
     { imagem: 'https://picsum.photos/seed/peca-05/900/1200', legenda: 'Peça exclusiva', tamanho: 'pequena' },
     { imagem: 'https://picsum.photos/seed/peca-06/900/1200', legenda: 'Edição limitada', tamanho: 'pequena' }
   ],
@@ -53,7 +53,7 @@ const CONTEUDO_PADRAO = {
     { imagem: 'img/marcas/lado-avesso.png', nome: 'Lado Avesso', link: '' },
     { imagem: 'img/marcas/basico-brasil.png', nome: 'Básico Brasil', link: '' },
     { imagem: 'img/marcas/borda-barroca.png', nome: 'Borda Barroca', link: '' },
-    { imagem: 'img/marcas/ambi-por-anselmi.png', nome: 'Ambi por Anselmi', link: '' },
+    { imagem: 'img/marcas/ambi-por-anselmi-limpo.png', nome: 'Ambi por Anselmi', link: '' },
     { imagem: 'img/marcas/amarras.png', nome: 'Amarras', link: '' },
     { imagem: 'img/marcas/gida.png', nome: 'Gida', link: '' },
     { imagem: 'img/marcas/lucidez.png', nome: 'Lucidez', link: '' },
@@ -78,6 +78,10 @@ function carregarConteudo(){
     const salvo = localStorage.getItem(STORAGE_KEY);
     if(!salvo) return structuredClone(CONTEUDO_PADRAO);
     const dados = JSON.parse(salvo);
+    /* Conteúdo salvo antes da troca ainda aponta para o logo Ambi com fundo marrom. */
+    (dados.marcas || []).forEach(m => {
+      if (m.imagem === 'img/marcas/ambi-por-anselmi.png') m.imagem = 'img/marcas/ambi-por-anselmi-limpo.png';
+    });
     return { ...structuredClone(CONTEUDO_PADRAO), ...dados };
   }catch(e){
     console.error('Não foi possível carregar o conteúdo salvo, usando o padrão.', e);

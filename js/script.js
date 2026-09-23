@@ -35,7 +35,7 @@
 
   /* ---- Vitrine (mosaico com efeito cortina) ---- */
   /* Fotos sem tamanho escolhido seguem este padrão, que fecha um bloco de 6 colunas sem buracos. */
-  const PADRAO_VITRINE = ['grande','larga','pequena','retangulo','pequena','pequena'];
+  const PADRAO_VITRINE = ['grande','retangulo','vertical','pequena','pequena','pequena'];
   const vitrineGrid = document.getElementById('vitrineGrid');
   vitrineGrid.innerHTML = dados.vitrine.map((item, i) => {
     const t = TAMANHOS_GALERIA[item.tamanho] || TAMANHOS_GALERIA[PADRAO_VITRINE[i % PADRAO_VITRINE.length]];
@@ -76,7 +76,7 @@
   document.getElementById('whatsappBtn').href = waLink;
   document.getElementById('whatsappFloat').href = waLink;
   document.getElementById('instagramBtn').href = dados.instagramUrl;
-  document.getElementById('instagramLabel').textContent = dados.instagramUsuario;
+  document.getElementById('instagramLabel').textContent = dados.instagramUsuario.replace(/^@/, '');
 
   /* ---- Rodapé ---- */
   document.getElementById('anoAtual').textContent = new Date().getFullYear();

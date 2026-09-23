@@ -434,12 +434,52 @@ section{ padding: clamp(64px,10vw,128px) 0; }
 }
 .btn-solid{ background: var(--preto); color: var(--branco); border-color: var(--preto); }
 .btn-solid:hover{ transform: translateY(-2px); background: var(--preto-suave); }
-.btn-instagram{
+
+/* Cartão do Instagram, abaixo do botão do WhatsApp */
+.insta-card{
+  margin: clamp(48px,7vw,72px) auto 0;
+  max-width: 640px;
+  display:flex;
+  align-items:center;
+  gap: 22px;
+  padding: 24px 28px;
+  text-align:left;
+  border: 1px solid var(--cinza-claro);
+  border-radius: var(--radius);
+  transition: border-color 250ms ease, transform 250ms ease;
+}
+.insta-card:hover{ border-color: var(--carvao); transform: translateY(-2px); }
+.insta-icon{
+  flex: 0 0 auto;
+  width: 64px; height: 64px;
+  display:flex; align-items:center; justify-content:center;
+  border-radius: 18px;
   background: linear-gradient(45deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%);
   color: var(--branco);
-  border-color: transparent;
 }
-.btn-instagram:hover{ transform: translateY(-2px); filter: brightness(1.08); }
+.insta-texto{ flex: 1; display:flex; flex-direction:column; gap: 4px; }
+.insta-titulo{
+  font-family: var(--utilitario);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--carvao-suave);
+}
+.insta-handle{ font-family: var(--display); font-size: clamp(24px,3vw,32px); line-height:1.1; }
+.insta-desc{ font-size: 15px; color: var(--carvao-suave); }
+.insta-seguir{
+  flex: 0 0 auto;
+  font-family: var(--utilitario);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--carvao);
+}
+@media (max-width: 560px){
+  .insta-card{ flex-direction:column; text-align:center; }
+  .insta-texto{ align-items:center; }
+}
 
 /* ---------- Footer ---------- */
 .site-footer{
