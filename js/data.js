@@ -27,12 +27,12 @@ const CONTEUDO_PADRAO = {
   ],
 
   vitrine: [
-    { imagem: 'https://picsum.photos/seed/peca-01/900/1200', legenda: 'Coleção atual' },
-    { imagem: 'https://picsum.photos/seed/peca-02/900/1200', legenda: 'Peça exclusiva' },
-    { imagem: 'https://picsum.photos/seed/peca-03/900/1200', legenda: 'Edição limitada' },
-    { imagem: 'https://picsum.photos/seed/peca-04/900/1200', legenda: 'Coleção atual' },
-    { imagem: 'https://picsum.photos/seed/peca-05/900/1200', legenda: 'Peça exclusiva' },
-    { imagem: 'https://picsum.photos/seed/peca-06/900/1200', legenda: 'Edição limitada' }
+    { imagem: 'https://picsum.photos/seed/peca-01/900/1200', legenda: 'Coleção atual', tamanho: 'retangulo' },
+    { imagem: 'https://picsum.photos/seed/peca-02/900/1200', legenda: 'Peça exclusiva', tamanho: 'grande' },
+    { imagem: 'https://picsum.photos/seed/peca-03/900/1200', legenda: 'Edição limitada', tamanho: 'vertical' },
+    { imagem: 'https://picsum.photos/seed/peca-04/900/1200', legenda: 'Coleção atual', tamanho: 'vertical' },
+    { imagem: 'https://picsum.photos/seed/peca-05/900/1200', legenda: 'Peça exclusiva', tamanho: 'larga' },
+    { imagem: 'https://picsum.photos/seed/peca-06/900/1200', legenda: 'Edição limitada', tamanho: 'pequena' }
   ],
 
   marcasEyebrow: 'Marcas',
@@ -69,7 +69,7 @@ const CONTEUDO_PADRAO = {
   instagramUrl: 'https://www.instagram.com/irismodamulher/',
   enderecoLinha1: 'Av. Bonifácio Vilela, 175 — Centro',
   enderecoLinha2: 'Ponta Grossa, PR',
-  horario: 'De segunda a sexta, das 9h às 18h30 · Sábados, das 9h às 13h',
+  horario: 'De segunda a sexta, das 9h às 18h30\nSábados, das 9h às 13h',
   mapaEmbedUrl: 'https://www.google.com/maps?q=Avenida%20Bonif%C3%A1cio%20Vilela%2C%20175%2C%20Centro%2C%20Ponta%20Grossa%2C%20PR&output=embed'
 };
 

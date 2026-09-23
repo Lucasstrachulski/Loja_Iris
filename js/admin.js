@@ -183,11 +183,24 @@
         </div>
         <label>Legenda</label>
         <input type="text" data-vitrine-campo="legenda" data-i="${i}" value="${item.legenda}">
+        <label>Tamanho no mosaico</label>
+        <select data-vitrine-campo="tamanho" data-i="${i}">
+          ${Object.entries(TAMANHOS_VITRINE_LABEL).map(([valor, rotulo]) =>
+            `<option value="${valor}" ${item.tamanho === valor ? 'selected' : ''}>${rotulo}</option>`
+          ).join('')}
+        </select>
       </div>
     `).join('');
   }
+  const TAMANHOS_VITRINE_LABEL = {
+    grande: 'Grande (a maior do mosaico)',
+    retangulo: 'Retângulo',
+    vertical: 'Vertical (mais alta)',
+    larga: 'Larga (mais baixa)',
+    pequena: 'Pequena'
+  };
   document.getElementById('addVitrine').addEventListener('click', () => {
-    dados.vitrine.push({ imagem: '', legenda: '' });
+    dados.vitrine.push({ imagem: '', legenda: '', tamanho: 'pequena' });
     renderizarVitrine();
   });
   document.getElementById('vitrineList').addEventListener('click', (e) => {

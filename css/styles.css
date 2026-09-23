@@ -228,13 +228,16 @@ section{ padding: clamp(64px,10vw,128px) 0; }
 .vitrine{ background: var(--branco); }
 .vitrine-grid{
   display:grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 3px;
+  grid-template-columns: repeat(5, 1fr);
+  grid-auto-rows: clamp(60px, 15vw, 190px);
+  grid-auto-flow: dense;
+  gap: 6px;
 }
 .vitrine-item{
   position:relative;
-  aspect-ratio: 3/4;
+  margin:0;
   overflow:hidden;
+  cursor: pointer;
   background: var(--preto-suave);
   border-radius: var(--radius);
 }
@@ -277,11 +280,11 @@ section{ padding: clamp(64px,10vw,128px) 0; }
 .vitrine-item:hover .vitrine-cap{ opacity:1; transform: translateY(0); }
 
 /* ---------- Sobre ---------- */
-.sobre{ background: var(--branco); color: var(--carvao); }
+.sobre{ background: var(--branco); color: var(--carvao); padding: clamp(44px,6.5vw,88px) 0; }
 .sobre .wrap{
   display:grid;
   grid-template-columns: 1fr 1fr;
-  gap: clamp(32px,6vw,80px);
+  gap: clamp(24px,4vw,52px);
   align-items:center;
 }
 .sobre-galeria{
@@ -306,9 +309,9 @@ section{ padding: clamp(64px,10vw,128px) 0; }
 }
 .sobre-galeria .sobre-img:first-child:hover img{ transform: scale(1.4); }
 .sobre-img:hover img{ transform: scale(1.05); }
-.sobre-text .eyebrow{ color: var(--acento); }
-.sobre-text h2{ color: var(--carvao); font-size: clamp(28px,4vw,42px); margin-top: 14px; }
-.sobre-text p{ margin-top: 18px; color: var(--carvao-suave); line-height:1.7; max-width: 46ch; }
+.sobre-text .eyebrow{ color: var(--acento); font-size: 15px; }
+.sobre-text h2{ color: var(--carvao); font-size: clamp(32px,4.6vw,50px); margin-top: 14px; }
+.sobre-text p{ margin-top: 18px; color: var(--carvao-suave); font-size: 19px; line-height:1.7; max-width: 46ch; }
 
 /* ---------- Marcas ---------- */
 .marcas{ background: var(--preto); }
@@ -327,16 +330,16 @@ section{ padding: clamp(64px,10vw,128px) 0; }
   align-items:center;
   gap: clamp(40px,6vw,80px);
   width: max-content;
-  animation: marcas-scroll 32s linear infinite;
+  animation: marcas-scroll 60s linear infinite;
 }
 .marcas-track:hover{ animation-play-state: paused; }
 .marca-logo{
   flex: 0 0 auto;
-  height: clamp(64px,7.5vw,84px);
-  padding: 14px 22px;
+  height: clamp(88px,10vw,120px);
+  padding: 16px 26px;
   background: var(--branco);
   border: none;
-  border-radius: 10px;
+  border-radius: 0;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -346,7 +349,7 @@ section{ padding: clamp(64px,10vw,128px) 0; }
 .marca-logo img{
   height:100%;
   width:auto;
-  max-width: 140px;
+  max-width: 200px;
   object-fit:contain;
 }
 .marca-logo:hover{ transform: translateY(-3px); }
@@ -503,7 +506,6 @@ section{ padding: clamp(64px,10vw,128px) 0; }
 /* ---------- Responsive ---------- */
 @media (max-width: 900px){
   .sobre .wrap, .local .wrap{ grid-template-columns: 1fr; }
-  .vitrine-grid{ grid-template-columns: repeat(2,1fr); }
   .sobre-galeria{ grid-auto-rows: 90px; }
 }
 @media (max-width: 720px){
@@ -522,5 +524,4 @@ section{ padding: clamp(64px,10vw,128px) 0; }
   .section-head .note{ text-align:left; }
 }
 @media (max-width: 480px){
-  .vitrine-grid{ grid-template-columns: 1fr; }
 }

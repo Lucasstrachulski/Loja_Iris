@@ -33,15 +33,20 @@
   `;
   }).join('');
 
-  /* ---- Vitrine (galeria com efeito cortina) ---- */
+  /* ---- Vitrine (mosaico com efeito cortina) ---- */
+  /* Fotos sem tamanho escolhido seguem este padrão, que fecha um bloco de 5 colunas sem buracos. */
+  const PADRAO_VITRINE = ['retangulo','grande','vertical','vertical','larga','pequena'];
   const vitrineGrid = document.getElementById('vitrineGrid');
-  vitrineGrid.innerHTML = dados.vitrine.map((item, i) => `
-    <figure class="vitrine-item" data-index="${i}">
+  vitrineGrid.innerHTML = dados.vitrine.map((item, i) => {
+    const t = TAMANHOS_GALERIA[item.tamanho] || TAMANHOS_GALERIA[PADRAO_VITRINE[i % PADRAO_VITRINE.length]];
+    return `
+    <figure class="vitrine-item" data-index="${i}" style="grid-column: span ${t.col}; grid-row: span ${t.row};">
       <img src="${item.imagem}" alt="${item.legenda}" loading="lazy">
       <div class="curtain"><span></span><span></span></div>
       <figcaption class="vitrine-cap">${item.legenda}</figcaption>
     </figure>
-  `).join('');
+  `;
+  }).join('');
 
   /* ---- Marcas ---- */
   document.getElementById('marcasEyebrow').textContent = dados.marcasEyebrow;
@@ -59,7 +64,12 @@
   /* ---- Localização ---- */
   document.getElementById('enderecoLinhas').textContent =
     `${dados.enderecoLinha1} · ${dados.enderecoLinha2}`;
-  document.getElementById('horarioTexto').textContent = dados.horario;
+  /* Uma linha por período; " · " também quebra, para horários salvos no formato antigo. */
+  const horarioTexto = document.getElementById('horarioTexto');
+  dados.horario.split(/\n| · /).forEach((linha, i) => {
+    if (i > 0) horarioTexto.appendChild(document.createElement('br'));
+    horarioTexto.appendChild(document.createTextNode(linha));
+  });
   const mapaFrame = document.getElementById('mapaFrame');
   const mapaFrameWrap = mapaFrame.closest('.map-frame');
   mapaFrame.addEventListener('load', () => mapaFrameWrap.classList.add('loaded'));
