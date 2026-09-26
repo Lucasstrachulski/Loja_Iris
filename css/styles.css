@@ -327,7 +327,6 @@ section{ padding: clamp(64px,10vw,128px) 0; }
   width: max-content;
   animation: marcas-scroll 60s linear infinite;
 }
-.marcas-track:hover{ animation-play-state: paused; }
 .marca-logo{
   flex: 0 0 auto;
   height: clamp(88px,10vw,120px);
