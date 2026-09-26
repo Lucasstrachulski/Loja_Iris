@@ -1,4 +1,8 @@
 (function(){
+  /* Ao voltar do painel pelo botão "voltar", o navegador (principalmente no celular) mostra a página
+     guardada na memória, com a capa antiga. Recarrega para ler o conteúdo salvo mais recente. */
+  window.addEventListener('pageshow', (e) => { if (e.persisted) location.reload(); });
+
   const dados = carregarConteudo();
 
   /* ---- Marca ---- */

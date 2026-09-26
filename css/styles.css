@@ -543,6 +543,7 @@ section{ padding: clamp(64px,10vw,128px) 0; }
 @media (max-width: 900px){
   .vitrine-grid{ grid-template-columns: repeat(4,1fr); grid-auto-rows: 110px; }
   .sobre .wrap, .local .wrap{ grid-template-columns: 1fr; }
+  .sobre-text{ order: -1; }
   .sobre-galeria{ grid-auto-rows: 90px; }
 }
 @media (max-width: 720px){

@@ -101,17 +101,33 @@
     preview.src = dados.heroImagem || '';
     preview.style.display = dados.heroImagem ? '' : 'none';
   }
+  /* A capa é salva na hora: no celular é fácil trocar a foto e sair sem rolar até "Salvar alterações".
+     Só a capa entra no que já estava salvo, para não gravar textos que ainda estão sendo editados. */
+  function salvarCapa(mensagemOk){
+    const status = document.getElementById('heroImagemStatus');
+    const salvo = carregarConteudo();
+    salvo.heroImagem = dados.heroImagem;
+    if (salvarConteudo(salvo)){
+      status.textContent = mensagemOk;
+    } else {
+      status.textContent = '';
+      alert('Não deu pra salvar a capa: a foto passou do espaço que o navegador permite guardar. Tente uma foto menor.');
+    }
+  }
   document.getElementById('heroImagemArquivo').addEventListener('change', async (e) => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
     try{
       dados.heroImagem = await fotoParaDataUrl(file);
       renderizarHeroImagem();
+      salvarCapa('Foto de capa salva.');
     }catch(err){ alert(err.message); }
+    e.target.value = '';
   });
   document.getElementById('removerHeroImagem').addEventListener('click', () => {
     dados.heroImagem = '';
     renderizarHeroImagem();
+    salvarCapa('Foto de capa removida.');
   });
 
   /* ---- Fotos da loja (lista repetível) ---- */
