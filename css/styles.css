@@ -547,8 +547,15 @@ section{ padding: clamp(64px,10vw,128px) 0; }
   .sobre-galeria{ grid-auto-rows: 90px; }
 }
 @media (max-width: 720px){
-  .nav-toggle{ display:flex; }
+  /* O botão fica por cima do painel aberto (senão o painel o cobre e não dá para fechar) e vira um X. */
+  .nav-toggle{ display:flex; position:relative; z-index:2; }
+  .nav-toggle .icone-fechar{ display:none; }
+  .site-header.menu-aberto .nav-toggle,
+  .site-header.menu-aberto.scrolled .nav-toggle{ border-color: var(--branco); color: var(--branco); }
+  .site-header.menu-aberto .nav-toggle .icone-abrir{ display:none; }
+  .site-header.menu-aberto .nav-toggle .icone-fechar{ display:block; }
   .nav-links{
+    z-index:1;
     position:fixed; top:0; right:0; height:100svh; width: min(78vw,320px);
     background: var(--preto); flex-direction:column;
     justify-content:center; align-items:flex-start;
@@ -557,7 +564,8 @@ section{ padding: clamp(64px,10vw,128px) 0; }
     transition: transform 400ms ease;
   }
   .nav-links.open{ transform: translateX(0); }
-  .nav-links a{ color: var(--branco); font-size:14px; }
+  .nav-links a,
+  .site-header.scrolled .nav-links a{ color: var(--branco); font-size:14px; }
   .section-head{ flex-direction:column; align-items:flex-start; }
   .section-head .note{ text-align:left; }
 }

@@ -98,14 +98,22 @@
   /* Menu mobile */
   const navToggle = document.getElementById('navToggle');
   const navLinks = document.getElementById('navLinks');
-  navToggle.addEventListener('click', () => {
-    const aberto = navLinks.classList.toggle('open');
+  const definirMenu = (aberto) => {
+    navLinks.classList.toggle('open', aberto);
+    header.classList.toggle('menu-aberto', aberto);
     navToggle.setAttribute('aria-expanded', String(aberto));
+    navToggle.setAttribute('aria-label', aberto ? 'Fechar menu' : 'Abrir menu');
+  };
+  navToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    definirMenu(!navLinks.classList.contains('open'));
   });
-  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-    navLinks.classList.remove('open');
-    navToggle.setAttribute('aria-expanded', 'false');
-  }));
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => definirMenu(false)));
+  /* Tocar fora do painel ou apertar Esc também fecha */
+  document.addEventListener('click', (e) => {
+    if (navLinks.classList.contains('open') && !navLinks.contains(e.target)) definirMenu(false);
+  });
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape') definirMenu(false); });
 
   /* Reveal genérico + efeito cortina da vitrine, respeitando reduced motion */
   const semMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
