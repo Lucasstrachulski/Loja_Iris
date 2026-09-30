@@ -1,21 +1,13 @@
 (function(){
-  let dados = carregarConteudo();
+  let dados = structuredClone(CONTEUDO_PADRAO);
 
-  /* ---- Login com senha (protótipo de front-end: a checagem roda no navegador,
-     não em um servidor. Serve para barrar acesso casual, não é segurança real.
-     Para trocar a senha: gere o hash SHA-256 dela (ex: no console do navegador
-     rodando `await sha256Hex('novaSenha')`) e substitua o valor abaixo. ---- */
-  const SENHA_HASH = '0f77bbbb3b3499d03da1447a61b27b18a31279f251e563247c45467936923f58'; // senha atual: iris2026
-  const SESSAO_KEY = 'loja-admin-autenticado';
-
-  async function sha256Hex(texto){
-    const buffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(texto));
-    return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-  }
+  /* ---- Login (Supabase Auth). Quem pode entrar é quem foi cadastrado em
+     Authentication → Users no painel do Supabase; o banco só aceita
+     alterações vindas de uma sessão logada (ver supabase/setup.sql). ---- */
 
   /* ---- Fotos escolhidas do celular/computador: redimensiona e comprime
-     no navegador (sem servidor) antes de guardar, pra caber no localStorage. ---- */
-  function arquivoParaImagem(file, ladoMaximo, formatoSaida, qualidade){
+     no navegador antes de enviar, pra subir rápido mesmo no 4G. ---- */
+  function arquivoParaBlob(file, ladoMaximo, formatoSaida, qualidade){
     return new Promise((resolve, reject) => {
       const leitor = new FileReader();
       leitor.onload = () => {
@@ -29,7 +21,8 @@
           const canvas = document.createElement('canvas');
           canvas.width = width; canvas.height = height;
           canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-          resolve(canvas.toDataURL(formatoSaida, qualidade));
+          canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('Não foi possível ler essa imagem.')),
+            formatoSaida, qualidade);
         };
         img.onerror = () => reject(new Error('Não foi possível ler essa imagem.'));
         img.src = leitor.result;
@@ -38,26 +31,42 @@
       leitor.readAsDataURL(file);
     });
   }
-  function fotoParaDataUrl(file){ return arquivoParaImagem(file, 1600, 'image/jpeg', 0.82); }
-  function logoParaDataUrl(file){
-    return arquivoParaImagem(file, 700, file.type === 'image/png' ? 'image/png' : 'image/jpeg', 0.9);
+  async function enviarFotoArquivo(file){
+    return enviarFoto(await arquivoParaBlob(file, 1600, 'image/jpeg', 0.82), 'jpg');
+  }
+  async function enviarLogoArquivo(file){
+    const png = file.type === 'image/png';
+    return enviarFoto(await arquivoParaBlob(file, 700, png ? 'image/png' : 'image/jpeg', 0.9), png ? 'png' : 'jpg');
   }
 
-  function entrarNoPainel(){
+  async function entrarNoPainel(){
     document.getElementById('loginCard').style.display = 'none';
     document.getElementById('adminShell').style.display = 'block';
+    dados = await carregarConteudo();
     preencherFormulario();
   }
 
+  function mostrarErroLogin(texto){
+    const erro = document.getElementById('loginErro');
+    erro.textContent = texto;
+    erro.style.display = 'block';
+  }
+
   async function tentarLogin(){
+    if (!supabaseCliente){
+      mostrarErroLogin('O painel ainda não foi ligado ao Supabase (js/config.js).');
+      return;
+    }
     const campo = document.getElementById('loginSenha');
-    const hash = await sha256Hex(campo.value);
-    if (hash === SENHA_HASH){
-      sessionStorage.setItem(SESSAO_KEY, '1');
+    const { error } = await supabaseCliente.auth.signInWithPassword({
+      email: document.getElementById('loginEmail').value.trim(),
+      password: campo.value
+    });
+    if (!error){
       document.getElementById('loginErro').style.display = 'none';
       entrarNoPainel();
     } else {
-      document.getElementById('loginErro').style.display = 'block';
+      mostrarErroLogin('E-mail ou senha incorretos. Tente novamente.');
       campo.value = '';
       campo.focus();
     }
@@ -68,9 +77,9 @@
     if (e.key === 'Enter') tentarLogin();
   });
 
-  document.getElementById('logoutBtn').addEventListener('click', (e) => {
+  document.getElementById('logoutBtn').addEventListener('click', async (e) => {
     e.preventDefault();
-    sessionStorage.removeItem(SESSAO_KEY);
+    await supabaseCliente.auth.signOut();
     document.getElementById('adminShell').style.display = 'none';
     document.getElementById('loginCard').style.display = 'block';
     document.getElementById('loginSenha').value = '';
@@ -103,25 +112,27 @@
   }
   /* A capa é salva na hora: no celular é fácil trocar a foto e sair sem rolar até "Salvar alterações".
      Só a capa entra no que já estava salvo, para não gravar textos que ainda estão sendo editados. */
-  function salvarCapa(mensagemOk){
+  async function salvarCapa(mensagemOk){
     const status = document.getElementById('heroImagemStatus');
-    const salvo = carregarConteudo();
+    const salvo = await carregarConteudo();
     salvo.heroImagem = dados.heroImagem;
-    if (salvarConteudo(salvo)){
+    if (await salvarConteudo(salvo)){
       status.textContent = mensagemOk;
     } else {
       status.textContent = '';
-      alert('Não deu pra salvar a capa: a foto passou do espaço que o navegador permite guardar. Tente uma foto menor.');
+      alert('Não deu pra salvar a capa. Verifique a internet e tente de novo.');
     }
   }
   document.getElementById('heroImagemArquivo').addEventListener('change', async (e) => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
+    const status = document.getElementById('heroImagemStatus');
+    status.textContent = 'Enviando foto…';
     try{
-      dados.heroImagem = await fotoParaDataUrl(file);
+      dados.heroImagem = await enviarFotoArquivo(file);
       renderizarHeroImagem();
-      salvarCapa('Foto de capa salva.');
-    }catch(err){ alert(err.message); }
+      await salvarCapa('Foto de capa salva.');
+    }catch(err){ status.textContent = ''; alert(err.message); }
     e.target.value = '';
   });
   document.getElementById('removerHeroImagem').addEventListener('click', () => {
@@ -179,7 +190,7 @@
     const file = e.target.files && e.target.files[0];
     if (i === null || !file) return;
     try{
-      dados.sobreGaleria[Number(i)].imagem = await fotoParaDataUrl(file);
+      dados.sobreGaleria[Number(i)].imagem = await enviarFotoArquivo(file);
       renderizarSobreGaleria();
     }catch(err){ alert(err.message); }
   });
@@ -233,7 +244,7 @@
     const file = e.target.files && e.target.files[0];
     if (i === null || !file) return;
     try{
-      dados.vitrine[Number(i)].imagem = await fotoParaDataUrl(file);
+      dados.vitrine[Number(i)].imagem = await enviarFotoArquivo(file);
       renderizarVitrine();
     }catch(err){ alert(err.message); }
   });
@@ -274,13 +285,13 @@
     const file = e.target.files && e.target.files[0];
     if (i === null || !file) return;
     try{
-      dados.marcas[Number(i)].imagem = await logoParaDataUrl(file);
+      dados.marcas[Number(i)].imagem = await enviarLogoArquivo(file);
       renderizarMarcas();
     }catch(err){ alert(err.message); }
   });
 
   /* ---- Salvar / Restaurar ---- */
-  document.getElementById('adminForm').addEventListener('submit', (e) => {
+  document.getElementById('adminForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     camposSimples.forEach(id => {
       const el = document.getElementById(id);
@@ -290,9 +301,9 @@
     const iframeColado = dados.mapaEmbedUrl.match(/src=["']([^"']+)["']/i);
     if (iframeColado) dados.mapaEmbedUrl = iframeColado[1];
     dados.mapaEmbedUrl = dados.mapaEmbedUrl.trim();
-    const salvou = salvarConteudo(dados);
+    const salvou = await salvarConteudo(dados);
     if (!salvou){
-      alert('Não deu pra salvar: as fotos escolhidas juntas passaram do espaço que o navegador permite guardar. Tente usar menos fotos ou fotos menores.');
+      alert('Não deu pra salvar. Verifique a internet e tente de novo.');
       return;
     }
     const msg = document.getElementById('saveMsg');
@@ -300,16 +311,18 @@
     setTimeout(() => msg.classList.remove('show'), 3200);
   });
 
-  document.getElementById('resetBtn').addEventListener('click', () => {
-    if (!confirm('Restaurar todo o conteúdo para o padrão? As alterações salvas neste navegador serão perdidas.')) return;
-    localStorage.removeItem(STORAGE_KEY);
-    dados = carregarConteudo();
+  document.getElementById('resetBtn').addEventListener('click', async () => {
+    if (!confirm('Restaurar todo o conteúdo para o padrão? Isso muda o site para todo mundo.')) return;
+    dados = structuredClone(CONTEUDO_PADRAO);
+    if (!(await salvarConteudo(dados))) alert('Não deu pra restaurar. Verifique a internet e tente de novo.');
     preencherFormulario();
   });
 
-  /* Entra direto se já autenticou nesta aba antes (precisa vir por último:
+  /* Entra direto se já existe uma sessão logada neste aparelho (precisa vir por último:
      depende de preencherFormulario e das funções de renderização acima). */
-  if (sessionStorage.getItem(SESSAO_KEY) === '1'){
-    entrarNoPainel();
+  if (supabaseCliente){
+    supabaseCliente.auth.getSession().then(({ data }) => {
+      if (data.session) entrarNoPainel();
+    });
   }
 })();

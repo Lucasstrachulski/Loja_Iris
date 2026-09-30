@@ -26,7 +26,7 @@
   legend{ font-family: var(--utilitario); font-size:12px; letter-spacing:.1em; text-transform:uppercase; color: var(--acento); padding:0 8px; }
   label{ display:block; font-size:13px; font-weight:500; margin: 14px 0 6px; }
   label small{ display:block; font-weight:400; color: var(--carvao-suave); margin-top: 2px; }
-  input[type=text], input[type=tel], input[type=url], textarea{
+  input[type=text], input[type=tel], input[type=url], input[type=email], input[type=password], textarea{
     width:100%; padding: 10px 12px; border:1px solid var(--cinza-claro); border-radius:4px;
     font-family: var(--corpo); font-size: 14px; background: var(--branco); color: var(--carvao);
   }
@@ -73,10 +73,12 @@
 <div id="loginCard" class="login-card">
   <p class="eyebrow">Área administrativa</p>
   <h2>Entrar</h2>
-  <p>Acesso restrito para edição do site. Só quem tem a senha entra. (Protótipo de front-end: a proteção fica no navegador, não em um servidor — suficiente para afastar curiosos, mas não é um login de verdade em produção.)</p>
+  <p>Acesso restrito para edição do site. Entre com o e-mail e a senha cadastrados.</p>
+  <label for="loginEmail">E-mail</label>
+  <input type="email" id="loginEmail" autocomplete="username">
   <label for="loginSenha">Senha</label>
-  <input type="password" id="loginSenha" placeholder="••••••">
-  <p class="login-erro" id="loginErro" style="display:none; color:#a33; font-size:13px; margin-top:8px;">Senha incorreta. Tente novamente.</p>
+  <input type="password" id="loginSenha" placeholder="••••••" autocomplete="current-password">
+  <p class="login-erro" id="loginErro" style="display:none; color:#a33; font-size:13px; margin-top:8px;"></p>
   <button class="btn-admin btn-primary" id="loginBtn" style="margin-top:16px; width:100%;">Entrar</button>
 </div>
 
@@ -89,7 +91,7 @@
     </span>
   </div>
   <h1>O que você quer atualizar hoje?</h1>
-  <p class="admin-lead">Edite os textos, fotos e contatos do site. Clique em <strong>Salvar alterações</strong> ao final para publicar no navegador atual.</p>
+  <p class="admin-lead">Edite os textos, fotos e contatos do site. Clique em <strong>Salvar alterações</strong> ao final para publicar no site. A foto de capa é publicada assim que você escolhe.</p>
 
   <form id="adminForm">
     <fieldset>
@@ -187,10 +189,10 @@
     </div>
     <p class="save-msg" id="saveMsg">Alterações salvas. Abra "Ver site" para conferir.</p>
   </form>
-
-  <p class="aviso">Este painel é um protótipo de front-end: as alterações ficam guardadas neste navegador (localStorage). Para a dona da loja editar de qualquer computador ou celular e todo mundo ver a mudança, o próximo passo é ligar este painel a um backend/CMS simples.</p>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
 <script src="js/data.js"></script>
 <script src="js/admin.js"></script>
 </body>

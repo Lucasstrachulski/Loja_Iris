@@ -40,7 +40,18 @@ Para visualizar: abra `index.html` em qualquer navegador. Não depende de servid
 
 ## Sobre o painel administrativo (importante)
 
-O painel (`admin.html`) é um **protótipo de front-end**: hoje ele salva as alterações no navegador de quem está editando (localStorage), sem senha real e sem sincronizar entre dispositivos. Ele já mostra pra dona exatamente como vai ser usar (quais campos existem, como adicionar/remover fotos, como salvar). Para colocar em produção — ou seja, ela editar de qualquer computador ou celular e o site mudar para todo mundo — falta ligar esse mesmo painel a um backend simples (um banco de dados pequeno + login de verdade). Se quiser, o próximo passo natural é eu montar essa parte.
+O painel (`admin.html`) salva tudo no **Supabase** (plano gratuito): os textos ficam na tabela `site_conteudo` e as fotos no bucket `fotos`. Qualquer alteração feita de qualquer celular ou computador aparece para todo mundo que abre o site. O login é de verdade (e-mail + senha do Supabase Auth), e o banco só aceita alterações de quem está logado.
+
+### Configuração (uma vez só)
+
+1. Crie uma conta em https://supabase.com e um projeto novo (região: São Paulo).
+2. Em **SQL Editor → New query**, cole o conteúdo de `supabase/setup.sql` e clique em **Run**.
+3. Em **Authentication → Sign In / Providers**, **desligue "Allow new users to sign up"**. Sem isso, qualquer pessoa conseguiria criar uma conta e editar o site.
+4. Em **Authentication → Users → Add user → Create new user**, cadastre o e-mail e a senha da dona (marque "Auto Confirm User").
+5. Em **Project Settings → API**, copie a *Project URL* e a *anon public key* para `js/config.js`.
+6. Faça commit e push. Pronto: ela entra em `admin.html` com esse e-mail e senha.
+
+Se `js/config.js` estiver vazio, o site mostra o conteúdo padrão de `js/data.js` e o painel avisa que ainda não foi ligado.
 
 ## Personalização
 

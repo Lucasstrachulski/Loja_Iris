@@ -1,13 +1,17 @@
 /* =========================================================
    Conteúdo editável do site.
-   A aba Admin (admin.html) sobrescreve estes valores e salva
-   no localStorage do navegador, em STORAGE_KEY.
-   Isso é um protótipo de front-end: para o conteúdo persistir
-   para todas as visitantes (não só no navegador de quem edita),
-   essas informações precisam futuramente vir de um backend/CMS.
+   A aba Admin (admin.html) salva as alterações no Supabase
+   (tabela site_conteudo + bucket de fotos "fotos"), então
+   todo mundo que abre o site vê a mesma versão.
+   CONTEUDO_PADRAO é usado enquanto nada foi salvo ainda,
+   ou se o Supabase não estiver configurado em js/config.js.
    ========================================================= */
 
-const STORAGE_KEY = 'loja-site-conteudo-v1';
+const supabaseCliente = (window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY)
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : null;
+const CONTEUDO_ID = 1;
+const FOTOS_BUCKET = 'fotos';
 
 const CONTEUDO_PADRAO = {
   marca: 'Íris',
@@ -73,28 +77,34 @@ const CONTEUDO_PADRAO = {
   mapaEmbedUrl: 'https://www.google.com/maps?q=Avenida%20Bonif%C3%A1cio%20Vilela%2C%20175%2C%20Centro%2C%20Ponta%20Grossa%2C%20PR&output=embed'
 };
 
-function carregarConteudo(){
+async function carregarConteudo(){
+  if (!supabaseCliente) return structuredClone(CONTEUDO_PADRAO);
   try{
-    const salvo = localStorage.getItem(STORAGE_KEY);
-    if(!salvo) return structuredClone(CONTEUDO_PADRAO);
-    const dados = JSON.parse(salvo);
-    /* Conteúdo salvo antes da troca ainda aponta para o logo Ambi com fundo marrom. */
-    (dados.marcas || []).forEach(m => {
-      if (m.imagem === 'img/marcas/ambi-por-anselmi.png') m.imagem = 'img/marcas/ambi-por-anselmi-limpo.png';
-    });
-    return { ...structuredClone(CONTEUDO_PADRAO), ...dados };
+    const { data, error } = await supabaseCliente
+      .from('site_conteudo').select('dados').eq('id', CONTEUDO_ID).maybeSingle();
+    if (error) throw error;
+    if (!data) return structuredClone(CONTEUDO_PADRAO);
+    return { ...structuredClone(CONTEUDO_PADRAO), ...data.dados };
   }catch(e){
     console.error('Não foi possível carregar o conteúdo salvo, usando o padrão.', e);
     return structuredClone(CONTEUDO_PADRAO);
   }
 }
 
-function salvarConteudo(dados){
-  try{
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
-    return true;
-  }catch(e){
-    console.error('Não foi possível salvar: armazenamento do navegador cheio.', e);
-    return false;
-  }
+async function salvarConteudo(dados){
+  if (!supabaseCliente) return false;
+  const { error } = await supabaseCliente
+    .from('site_conteudo')
+    .upsert({ id: CONTEUDO_ID, dados, atualizado_em: new Date().toISOString() });
+  if (error){ console.error('Não foi possível salvar.', error); return false; }
+  return true;
+}
+
+/* Sobe uma foto para o bucket público e devolve o link dela. */
+async function enviarFoto(blob, extensao){
+  const caminho = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${extensao}`;
+  const { error } = await supabaseCliente.storage.from(FOTOS_BUCKET)
+    .upload(caminho, blob, { contentType: blob.type, cacheControl: '31536000' });
+  if (error) throw new Error('Não foi possível enviar a foto. Verifique a internet e tente de novo.');
+  return supabaseCliente.storage.from(FOTOS_BUCKET).getPublicUrl(caminho).data.publicUrl;
 }
