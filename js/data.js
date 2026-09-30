@@ -63,7 +63,7 @@ const CONTEUDO_PADRAO = {
     { imagem: 'img/marcas/stroke.jpg', nome: 'Stroke', link: '' }
   ],
 
-  whatsappNumero: '5542999477512',
+  whatsappNumero: '554299948-2000',
   whatsappMensagem: 'Olá! Vi o site e gostaria de saber mais.',
   instagramUsuario: 'irismodamulher',
   instagramUrl: 'https://www.instagram.com/irismodamulher/',
